@@ -26,6 +26,8 @@ checkpoints_flant5_3b
 *.pkl
 *.csv
 tests/state_of_the_union.txt
+fastchat/llm_judge/data/mt_bench/model_answer
+fastchat/llm_judge/data/mt_bench/model_judgment
 
 # Build
 build
