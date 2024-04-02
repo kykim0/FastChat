@@ -2378,6 +2378,16 @@ class YandexGPTAdapter(BaseModelAdapter):
         return get_conv_template("yandexgpt")
 
 
+class GemmaCustomAdapter(BaseModelAdapter):
+    """The model adapter for custom Gemma"""
+
+    def match(self, model_path: str):
+        return "gemma-custom" in model_path.lower()
+
+    def get_default_conv_template(self, model_path: str) -> Conversation:
+        return get_conv_template("gemma-custom")
+
+
 class CllmAdapter(BaseModelAdapter):
     """The model adapter for CLLM"""
 
@@ -2545,6 +2555,7 @@ register_model_adapter(CllmAdapter)
 register_model_adapter(RekaAdapter)
 register_model_adapter(SmaugChatAdapter)
 register_model_adapter(Llama3Adapter)
+register_model_adapter(GemmaCustomAdapter)
 
 # After all adapters, try the default base adapter.
 register_model_adapter(BaseModelAdapter)
