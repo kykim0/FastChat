@@ -1621,6 +1621,19 @@ register_conv_template(
 )
 
 
+# Gemma custom
+register_conv_template(
+    Conversation(
+        name="gemma-custom",
+        system_message="<bos><|im_start|>system\n",
+        roles=("<|im_start|>user\n", "<|im_start|>assistant\n"),
+        sep_style=SeparatorStyle.NO_COLON_SINGLE,
+        sep="<|im_end|>\n",
+        stop_str="<|im_end|>",
+    )
+)
+
+
 if __name__ == "__main__":
     from fastchat.conversation import get_conv_template
 

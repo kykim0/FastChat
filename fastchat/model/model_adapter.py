@@ -2276,6 +2276,16 @@ class GemmaAdapter(BaseModelAdapter):
         return get_conv_template("gemma")
 
 
+class GemmaCustomAdapter(BaseModelAdapter):
+    """The model adapter for custom Gemma"""
+
+    def match(self, model_path: str):
+        return "gemma-custom" in model_path.lower()
+
+    def get_default_conv_template(self, model_path: str) -> Conversation:
+        return get_conv_template("gemma-custom")
+
+
 class CllmAdapter(BaseModelAdapter):
     """The model adapter for CLLM"""
 
@@ -2396,6 +2406,7 @@ register_model_adapter(SolarAdapter)
 register_model_adapter(SteerLMAdapter)
 register_model_adapter(LlavaAdapter)
 register_model_adapter(YuanAdapter)
+register_model_adapter(GemmaCustomAdapter)
 register_model_adapter(GemmaAdapter)
 register_model_adapter(CllmAdapter)
 
