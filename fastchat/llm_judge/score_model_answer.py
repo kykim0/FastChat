@@ -3,8 +3,9 @@
 Usage:
 python3 score_model_answer.py --model-path <path> \
     --model-id gemma-custom --num-gpus-total 4 \
-    --answer-file data/mt_bench/model_answer/g2b-sft-16.jsonl \
-    --bon-file data/mt_bench/model_answer/g2b-sft-16-btbinf-s42.jsonl
+    --answer-file data/mt_bench/model_answer/g2b-sft-256.jsonl \
+    --bon-file data/mt_bench/model_answer/g2b-sft-16-btbinf-s42.jsonl \
+    --best-of-n=64
 """
 import argparse
 import json
@@ -101,8 +102,9 @@ def get_model_scores(
                 prompt = conv.get_prompt()
                 prompts.append(prompt)
 
-            rmodel_inputs = rmodel_tokenizer(prompts, padding=True, truncation=True, return_tensors="pt").to("cuda")
-            rmodel_outputs = rmodel(**rmodel_inputs).logits
+            with torch.no_grad():
+                rmodel_inputs = rmodel_tokenizer(prompts, padding=True, truncation=True, return_tensors="pt").to("cuda")
+                rmodel_outputs = rmodel(**rmodel_inputs).logits
             turn_rewards = [r.squeeze().cpu().item() for r in rmodel_outputs]
             choice_rewards.append({"index": choice["index"], "turns": turn_rewards})
 
@@ -163,8 +165,10 @@ if __name__ == "__main__":
     question_file = f"data/mt_bench/question.jsonl"
     answer_file = args.answer_file
     bon_file = args.bon_file
+    if os.path.exists(bon_file):
+        raise ValueError(f"{bon_file} already exists.")
     fname = os.path.basename(bon_file)
-    score_file = os.path.join(os.path.dirname(bon_file), f"{fname[:fname.find('.jsonl')]}_score.jsonl")
+    score_file = None  # os.path.join(os.path.dirname(bon_file), f"{fname[:fname.find('.jsonl')]}_score.jsonl")
     run_rm(
         model_path=args.model_path,
         model_id=args.model_id,
@@ -179,4 +183,5 @@ if __name__ == "__main__":
     )
 
     reorg_answer_file(bon_file)
-    if score_file: reorg_answer_file(score_file)
+    if score_file:
+        reorg_answer_file(score_file)
