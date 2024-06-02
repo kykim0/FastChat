@@ -31,3 +31,8 @@ fastchat/llm_judge/data/mt_bench/model_judgment
 
 # Build
 build
+
+# Image data
+serve_images
+val2014
+vqa_examples
